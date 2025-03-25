@@ -52,23 +52,17 @@ public class GroupProductService {
     @Transactional
     public GroupOrder createGroupOrder(GroupProduct product, long quantity, User user) throws BalanceException {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime base= product.getEndDate();
-        // Проверка срока действия на покупку группы
         if (product.getEndDate() != null && product.getEndDate().isBefore(now)) {
             throw new InvalidParametersException("Product expired", 3);
         }
-        // Если product.getCount() > 0, считаем, что товар лимитирован
         if (product.getCount() > 0) {
             if (product.getCount() < quantity) {
                 throw new InvalidParametersException("Not enough product available", 4);
             }
-            // Уменьшаем количество товара на заказанную величину
             product.setCount(product.getCount() - quantity);
-            // Если после покупки количество становится нулевым, делаем группу недоступной
             if (product.getCount() == 0) {
                 product.setAvailable(false);
             }
-            // Сохраняем изменения группы в базе
             save(product);
         }
         GroupOrder groupOrder = new GroupOrder();
