@@ -52,24 +52,24 @@ public class GroupProductService {
     @Transactional
     public GroupOrder createGroupOrder(GroupProduct product, long quantity, User user) throws BalanceException {
         LocalDateTime now = LocalDateTime.now();
+
         if (product.getEndDate() != null && product.getEndDate().isBefore(now)) {
             throw new InvalidParametersException("Product expired", 3);
         }
+
         if (product.getCount() > 0) {
-            if (product.getCount() < quantity) {
+            int updated = repository.decreaseCount(product.getId(), quantity);
+            if (updated == 0) {
                 throw new InvalidParametersException("Not enough product available", 4);
             }
-            product.setCount(product.getCount() - quantity);
-            if (product.getCount() == 0) {
-                product.setAvailable(false);
-            }
-            save(product);
         }
+
         GroupOrder groupOrder = new GroupOrder();
         shopService.fillBasicOrderProperties(groupOrder, quantity, user);
         groupOrder.setProduct(product);
         orderRepository.save(groupOrder);
         shopService.makeTransaction(groupOrder, product);
+
         return groupOrder;
     }
 

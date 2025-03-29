@@ -40,6 +40,7 @@ public abstract class Product {
     @Setter
     private boolean available;
 
+
     public record ProductLimitations(LocalDateTime endDate, long count, String groupName) {
     }
 

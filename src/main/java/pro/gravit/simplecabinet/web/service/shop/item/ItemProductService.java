@@ -5,14 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pro.gravit.simplecabinet.web.model.shop.ItemOrder;
-import pro.gravit.simplecabinet.web.model.shop.ItemProduct;
+import pro.gravit.simplecabinet.web.exception.BalanceException;
+import pro.gravit.simplecabinet.web.exception.InvalidParametersException;
+import pro.gravit.simplecabinet.web.model.shop.*;
 import pro.gravit.simplecabinet.web.model.user.User;
 import pro.gravit.simplecabinet.web.repository.shop.ItemOrderRepository;
 import pro.gravit.simplecabinet.web.repository.shop.ItemProductRepository;
 import pro.gravit.simplecabinet.web.service.shop.ShopService;
 import pro.gravit.simplecabinet.web.service.shop.item.delivery.ItemDeliveryService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -44,6 +46,19 @@ public class ItemProductService {
 
     @Transactional
     public ItemOrder createItemOrder(ItemProduct product, long quantity, User user) {
+            LocalDateTime now = LocalDateTime.now();
+
+            if (product.getEndDate() != null && product.getEndDate().isBefore(now)) {
+                throw new InvalidParametersException("Product expired", 3);
+            }
+
+            if (product.getCount() > 0) {
+                int updated = repository.decreaseCount(product.getId(), quantity);
+                if (updated == 0) {
+                    throw new InvalidParametersException("Not enough product available", 4);
+                }
+            }
+
         var order = new ItemOrder();
         shopService.fillBasicOrderProperties(order, quantity, user);
         order.setProduct(product);
