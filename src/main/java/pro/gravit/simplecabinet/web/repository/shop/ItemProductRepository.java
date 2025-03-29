@@ -13,11 +13,11 @@ import java.util.List;
 
 public interface ItemProductRepository extends JpaRepository<ItemProduct, Long> {
 
+    @Query("SELECT ip FROM ItemProduct ip WHERE ip.available = :available AND (ip.endDate > CURRENT_TIMESTAMP OR ip.endDate IS NULL)")
     Page<ItemProduct> findAllByAvailable(Pageable pageable, boolean available);
 
     @Modifying
     @Query("update ItemProduct gp set gp.count = gp.count - :quantity where gp.id = :id and gp.count >= :quantity")
     int decreaseCount(@Param("id") long id, @Param("quantity") long quantity);
 
-    List<ItemProduct> findAllByEndDateBeforeAndAvailableTrue(LocalDateTime now);
 }

@@ -12,12 +12,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface GroupProductRepository extends JpaRepository<GroupProduct, Long> {
+
+    @Query("SELECT gp FROM GroupProduct gp WHERE gp.available = :available AND (gp.endDate > CURRENT_TIMESTAMP OR gp.endDate IS NULL)")
     Page<GroupProduct> findByAvailable(Pageable pageable, boolean available);
 
     @Modifying
     @Query("update GroupProduct gp set gp.count = gp.count - :quantity where gp.id = :id and gp.count >= :quantity")
     int decreaseCount(@Param("id") long id, @Param("quantity") long quantity);
 
-    List<GroupProduct> findAllByEndDateBeforeAndAvailableTrue(LocalDateTime now);
 }
 
