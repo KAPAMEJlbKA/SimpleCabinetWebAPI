@@ -21,7 +21,6 @@ public class ExpiredProductScheduler {
         this.itemProductRepository = itemProductRepository;
     }
 
-    // Каждые 60 секунд проверяем групповые товары
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void expireGroupProducts() {
@@ -33,7 +32,6 @@ public class ExpiredProductScheduler {
         }
     }
 
-    // Каждые 60 секунд проверяем предметы
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void expireItemProducts() {
