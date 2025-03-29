@@ -28,7 +28,7 @@ public class UserGroup {
     private User user;
     @Getter
     @Setter
-    @Column(name = "priority", nullable = false)
+    @Column(name = "priority")
     private int priority = 0;
 
 }
