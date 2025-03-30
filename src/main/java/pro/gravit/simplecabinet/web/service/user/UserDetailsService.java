@@ -50,7 +50,7 @@ public class UserDetailsService {
     }
 
     public Map<String, String> getUserPermissions(User user) {
-        return permissionService.findByUser(user.getId()).stream().collect(Collectors.toMap(UserPermission::getName, UserPermission::getValue));
+        return permissionService.findByUser(user.getId()) .stream() .collect(Collectors.toMap( UserPermission::getName, UserPermission::getValue, (existing, replacement) -> existing));
     }
 
     public class CabinetUserDetails implements UserDetails {

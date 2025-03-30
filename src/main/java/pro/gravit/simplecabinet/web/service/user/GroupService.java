@@ -23,7 +23,7 @@ public class GroupService {
         group.setId(id);
         group.setDisplayName(displayName);
         if (parentId != null) {
-            group.setParent(groupRepository.getReferenceById(id));
+            group.setParent(groupRepository.getReferenceById(parentId));
         }
         return groupRepository.save(group);
     }

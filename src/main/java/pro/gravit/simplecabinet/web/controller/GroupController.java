@@ -100,6 +100,7 @@ public class GroupController {
         if (userGroup.isEmpty()) {
             throw new InvalidParametersException("UserGroup not found", 40);
         }
+        userGroupService.delete(userGroup.get());
     }
 
     public record CreateGroupRequest(String id, String displayName, String parentId) {
