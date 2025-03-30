@@ -26,9 +26,5 @@ public class UserGroup {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @Getter
-    @Setter
-    @Column(name = "priority")
-    private int priority = 0;
 
 }

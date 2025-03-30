@@ -21,4 +21,3 @@ public interface GroupProductRepository extends JpaRepository<GroupProduct, Long
     int decreaseCount(@Param("id") long id, @Param("quantity") long quantity);
 
 }
-
